@@ -16,7 +16,7 @@ public class ClientDetailsServiceConfigProperties {
 
     private String resourceIds="xiexResourceIds";
 
-    private String authorizedGrantTypes="password";
+    private String authorizedGrantTypes="password,authorization_code,refresh_token";
 
     private int accessTokenValiditySeconds=7200;
 

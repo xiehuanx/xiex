@@ -59,10 +59,10 @@ public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurer
                 builder.withClient(clientsProperties[i].getClientId())
                         .resourceIds(clientsProperties[i].getResourceIds())
                         .secret(clientsProperties[i].getClientSecret())
-                        .authorizedGrantTypes("password", "authorization_code", "refresh_token")
+                        .authorizedGrantTypes(clientsProperties[i].getAuthorizedGrantTypes().split(","))
                         .refreshTokenValiditySeconds(clientsProperties[i].getRefreshTokenValiditySeconds())
                         .accessTokenValiditySeconds(clientsProperties[i].getAccessTokenValiditySeconds())
-                        .scopes("ALL");
+                        .scopes(clientsProperties[i].getScope().split(","));
             }
         }
 
