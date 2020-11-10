@@ -2,7 +2,6 @@ package xyz.xiex.xiexdemo.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import xyz.xiex.xiexdemo.entity.SysUser;
 
 /**
  * <p>

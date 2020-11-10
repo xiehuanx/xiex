@@ -1,0 +1,15 @@
+#security oauth2 配置
+#security:
+#  oauth2:
+#    client:
+#      client-id: xiex
+#      client-secret: xiexxResourceId
+#      grant-type: password
+#      scope: all
+#      user-authorization-uri: http://localhost:1234/oauth/authorize
+#      access-token-uri: http://localhost:1234/oauth/token
+#    resource:
+#      user-info-uri: http://localhost:1234/user
+#    authorization:
+#      check-token-access: http://localhost:1234/oauth/check_token
+

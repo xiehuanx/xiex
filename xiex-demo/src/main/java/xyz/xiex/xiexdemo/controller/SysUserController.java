@@ -67,7 +67,7 @@ public class SysUserController {
 
     }
 
-    @GetMapping("/userinfo·1·")
+    @GetMapping("/userinfo")
     @ResponseBody
     public Object authentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -41,16 +41,15 @@ public class ResourceServerConfigurer extends ResourceServerConfigurerAdapter {
                 //.authenticationEntryPoint(authenticationEntryPointConfig)
                 //.and()
                 .authorizeRequests()
-                .antMatchers("/actuator/**", "/au", "/myHello", "/user/*", "/sys/user/hello/test", "/test/role").permitAll()
+                .antMatchers("/actuator/**", "/au", "/myHello", "/sys/user/hello/test", "/test/role").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
     }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.resourceId("xiehuanxResourceId")
-                .stateless(true)
-                .tokenStore(redisTokenStore())
+        resources
+                .resourceId("123456")
                 .tokenServices(tokenServices());
         //resources.authenticationEntryPoint(authenticationEntryPoint);
     }
@@ -60,18 +59,15 @@ public class ResourceServerConfigurer extends ResourceServerConfigurerAdapter {
      * @return
      */
     @Bean
-    public ResourceServerTokenServices tokenServices(){
-        RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
-        remoteTokenServices.setClientId("xiex");
-        remoteTokenServices.setClientSecret("123456");
-        remoteTokenServices.setCheckTokenEndpointUrl("http://localhost:1234/oauth/check_token");
+    public DefaultTokenServices tokenServices(){
+        DefaultTokenServices remoteTokenServices = new DefaultTokenServices();
+        remoteTokenServices.setTokenStore(redisTokenStore());
         return remoteTokenServices;
     }
 
     @Bean
     public TokenStore redisTokenStore() {
         RedisTokenStore tokenStore = new RedisTokenStore(redisConnectionFactory);
-        //tokenStore.setPrefix("bing_token:"); // 自定义Redis前缀
         return tokenStore;
     }
 }
