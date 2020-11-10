@@ -23,7 +23,7 @@
     </properties>
 
     <modules>
-        <module>xiex-security</module>
+        <module>xiex-oauth</module>
         <module>xiex-demo</module>
         <module>xiex-eureka</module>
     </modules>
