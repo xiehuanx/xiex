@@ -1,5 +1,6 @@
 package xyz.xiex.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 public class XiexSecurityConfig extends WebSecurityConfigurerAdapter {
+   // @Autowired
+   // private XiexClientDetailUserDetailsService xiexClientDetailUserDetailsService;
 
     @Bean
     public PasswordEncoder bCryptPasswordEncoder(){
@@ -41,7 +44,7 @@ public class XiexSecurityConfig extends WebSecurityConfigurerAdapter {
         ;*/
 
         http.authorizeRequests()
-                .antMatchers("/actuator/**", "/imageCode/**","/oauth/*","/login/*").permitAll()
+                .antMatchers( "/imageCode/**","/login/*").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
     }

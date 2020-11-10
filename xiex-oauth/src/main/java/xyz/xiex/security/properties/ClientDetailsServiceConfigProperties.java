@@ -14,7 +14,7 @@ public class ClientDetailsServiceConfigProperties {
 
     private String clientId="xiex";
 
-    private String resourceIds="xiexResourceIds";
+    private String resourceIds="xiehuanxResourceId";
 
     private String authorizedGrantTypes="password,authorization_code,refresh_token";
 

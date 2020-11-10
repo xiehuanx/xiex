@@ -1,11 +1,16 @@
 package xyz.xiex.security.config;
 
 import cn.hutool.core.util.ArrayUtil;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -13,11 +18,14 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import xyz.xiex.security.properties.AuthoriaztionServerConfigProperties;
 import xyz.xiex.security.properties.ClientDetailsServiceConfigProperties;
+import xyz.xiex.security.service.XiexUserDetailsService;
 
 import javax.sql.DataSource;
 
@@ -32,16 +40,29 @@ import javax.sql.DataSource;
 @Configuration
 @EnableAuthorizationServer
 @EnableResourceServer
+@Slf4j
 public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private XiexUserDetailsService userDetailsService;
 
     @Autowired
     private RedisConnectionFactory connectionFactory;
     @Autowired(required = false)
     private AuthoriaztionServerConfigProperties authoriaztionServerConfigProperties;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired(required = false)
+    HttpSecurity http;
 
+
+
+    @Bean
+    public ClientDetailsService jdbcClientDetailsService(){
+        return new JdbcClientDetailsService(dataSource);
+    }
 
     /**
      * 注册clients到授权服务器
@@ -51,7 +72,7 @@ public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurer
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        ClientDetailsServiceConfigProperties[] clientsProperties = authoriaztionServerConfigProperties.getClients();
+/*        ClientDetailsServiceConfigProperties[] clientsProperties = authoriaztionServerConfigProperties.getClients();
         //注册到内存中
         InMemoryClientDetailsServiceBuilder builder = clients.inMemory();
         if (!ArrayUtil.isEmpty(clientsProperties)) {
@@ -64,9 +85,8 @@ public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurer
                         .accessTokenValiditySeconds(clientsProperties[i].getAccessTokenValiditySeconds())
                         .scopes(clientsProperties[i].getScope().split(","));
             }
-        }
-
-
+        }*/
+       clients.jdbc(dataSource).clients(jdbcClientDetailsService());
     }
 
     /**
@@ -80,6 +100,7 @@ public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurer
         endpoints
                 // 身份认证管理器, 主要用于"password"授权模式
                 .authenticationManager(authenticationManager)
+                .userDetailsService(userDetailsService)
                 //.tokenStore(tokenServices());
                 .tokenServices(tokenServices());
     }
@@ -94,7 +115,9 @@ public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurer
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.checkTokenAccess("permitAll()");
+        oauthServer
+                .checkTokenAccess("permitAll()")//.init(http)
+        ;
     }
 
     @Bean
@@ -111,6 +134,4 @@ public class XiexAuthoriaztionServerConfig extends AuthorizationServerConfigurer
         RedisTokenStore redis = new RedisTokenStore(connectionFactory);
         return redis;
     }
-
-
 }

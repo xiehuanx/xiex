@@ -12,9 +12,10 @@ import org.springframework.context.annotation.Configuration;
  * Describe:
  */
 @Data
-@ConfigurationProperties(prefix = "xyz.xiex.security")
-@Configuration
+//@ConfigurationProperties(prefix = "xyz.xiex.security.oauth")
+//@Configuration
 public class AuthoriaztionServerConfigProperties {
 
+    private String saveClientDetailsServiceType="memory";
     private ClientDetailsServiceConfigProperties[] clients={};
 }
