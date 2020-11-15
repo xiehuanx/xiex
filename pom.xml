@@ -26,6 +26,7 @@
         <module>xiex-oauth</module>
         <module>xiex-demo</module>
         <module>xiex-eureka</module>
+        <module>xiex-api</module>
     </modules>
 
     <dependencies>
